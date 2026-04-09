@@ -3,6 +3,12 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Verified;
+
+
 
 // Routes publiques
 Route::prefix('auth')->group(function () {
@@ -25,8 +31,6 @@ Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
 });
 
 
-use Illuminate\Http\Request;
-use Illuminate\Auth\Events\Verified;
 
 // Vérifier l'email via le lien
 Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
@@ -52,3 +56,12 @@ Route::post('/email/resend', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
     return response()->json(['message' => 'Email de vérification renvoyé']);
 })->middleware('auth:api');
+
+
+// Routes utilisateur connecté
+Route::middleware('auth:api')->prefix('user')->group(function () {
+    Route::get('profile', [UserController::class, 'profile']);
+    Route::put('profile', [UserController::class, 'updateProfile']);
+    Route::put('password', [UserController::class, 'updatePassword']); // ← nouveau
+
+});
