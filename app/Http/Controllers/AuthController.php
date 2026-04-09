@@ -45,7 +45,12 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return $this->respondWithToken(Auth::login($user), $user);
+        $user->sendEmailVerificationNotification(); // ← envoie l'email
+
+        return response()->json([
+            'message' => 'Compte créé. Vérifiez votre email avant de vous connecter.',
+            'user'    => $user,
+        ]);
     }
 
     #[OA\Post(
@@ -65,6 +70,7 @@ class AuthController extends Controller
         responses: [
             new OA\Response(response: 200, description: "Connexion reussie"),
             new OA\Response(response: 401, description: "Identifiants incorrects"),
+            new OA\Response(response: 403, description: "Email non verifie"),
         ]
     )]
     public function login(Request $request)
@@ -76,6 +82,14 @@ class AuthController extends Controller
 
         if (! $token = Auth::attempt($credentials)) {
             return response()->json(['message' => 'Identifiants incorrects'], 401);
+        }
+
+        // ← bloque si email non vérifié
+        if (! Auth::user()->hasVerifiedEmail()) {
+            Auth::logout();
+            return response()->json([
+                'message' => 'Veuillez vérifier votre email avant de vous connecter.'
+            ], 403);
         }
 
         return $this->respondWithToken($token, Auth::user());
@@ -122,8 +136,6 @@ class AuthController extends Controller
             new OA\Response(response: 401, description: "Token invalide"),
         ]
     )]
-
-
     public function refresh()
     {
         return $this->respondWithToken(Auth::refresh(), Auth::user());
@@ -138,10 +150,4 @@ class AuthController extends Controller
             'expires_in'   => Auth::factory()->getTTL() * 60,
         ]);
     }
-
-
-
-
-    
-
 }

@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable; // ← manquait
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -24,9 +26,11 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
  *     @OA\Property(property="user",         ref="#/components/schemas/UserResource")
  * )
  */
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
-    protected $fillable = ['name', 'email', 'password'];
+    use Notifiable; // ← fonctionne maintenant
+
+    protected $fillable = ['name', 'email', 'password', 'role'];
     protected $hidden   = ['password'];
 
     public function getJWTIdentifier()

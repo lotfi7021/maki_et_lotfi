@@ -215,6 +215,9 @@
                     },
                     "401": {
                         "description": "Identifiants incorrects"
+                    },
+                    "403": {
+                        "description": "Email non verifie"
                     }
                 }
             }
@@ -284,6 +287,128 @@
                     }
                 ]
             }
+        },
+        "/user/profile": {
+            "get": {
+                "tags": [
+                    "Utilisateur"
+                ],
+                "summary": "Voir son propre profil",
+                "operationId": "5ec759932352b381857e0724fbcdafa6",
+                "responses": {
+                    "200": {
+                        "description": "Profil utilisateur"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Utilisateur"
+                ],
+                "summary": "Modifier son nom et/ou email",
+                "operationId": "91d571499860944adb01f3fd304cf54d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Ahmed Ben Ali"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "ahmed@test.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profil mis à jour"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/password": {
+            "put": {
+                "tags": [
+                    "Utilisateur"
+                ],
+                "summary": "Changer son mot de passe",
+                "operationId": "f329508efca80c99c2ce8af38263ea6a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "current_password",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "current_password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "nouveau123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "nouveau123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mot de passe mis à jour"
+                    },
+                    "400": {
+                        "description": "Mot de passe actuel incorrect"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -303,6 +428,10 @@
         {
             "name": "Authentification",
             "description": "Authentification"
+        },
+        {
+            "name": "Utilisateur",
+            "description": "Utilisateur"
         }
     ]
 }
