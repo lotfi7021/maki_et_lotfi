@@ -215,6 +215,9 @@
                     },
                     "401": {
                         "description": "Identifiants incorrects"
+                    },
+                    "403": {
+                        "description": "Email non verifie"
                     }
                 }
             }
