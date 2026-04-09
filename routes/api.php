@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Verified;
+use App\Http\Controllers\NoteController;  // ← ADD THIS LINE
+
 
 
 
@@ -29,6 +31,15 @@ Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
     Route::delete('users/{id}',   [AdminController::class, 'deleteUser']);
     Route::put('users/{id}/role', [AdminController::class, 'changeRole']);
 });
+
+Route::prefix('notes')->group(function () {
+        Route::get('/',                         [NoteController::class, 'index']);
+        Route::post('/',                        [NoteController::class, 'store']);
+        Route::get('/{id}',                     [NoteController::class, 'show']);
+        Route::put('/{id}',                     [NoteController::class, 'update']);
+        Route::delete('/{id}',                  [NoteController::class, 'destroy']);
+        Route::patch('/{id}/toggle-pin',        [NoteController::class, 'togglePin']);
+    });
 
 
 

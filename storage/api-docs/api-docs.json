@@ -288,6 +288,323 @@
                 ]
             }
         },
+        "/notes": {
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "List all notes of the logged-in user",
+                "operationId": "9393a3bea0b52c3edef159a70977cbbe",
+                "parameters": [
+                    {
+                        "name": "theme",
+                        "in": "query",
+                        "description": "Filter by theme (default, dark, pastel, ocean, forest, sunset)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "pinned",
+                        "in": "query",
+                        "description": "Filter pinned notes only (1 = pinned)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                0,
+                                1
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of notes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 3
+                                        },
+                                        "notes": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Note"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Create a new note",
+                "operationId": "09e1e6df7c7704264ca5dff3c1283d86",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Shopping list"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Buy milk, eggs..."
+                                    },
+                                    "color": {
+                                        "description": "Hex color code",
+                                        "type": "string",
+                                        "example": "#FFEB3B"
+                                    },
+                                    "theme": {
+                                        "description": "default | dark | pastel | ocean | forest | sunset",
+                                        "type": "string",
+                                        "example": "pastel"
+                                    },
+                                    "is_pinned": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Note created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Note"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/notes/{id}": {
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Get a specific note",
+                "operationId": "4ff1db70f3fbc8ab14e315c81fbff433",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Note"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Note not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Update a note",
+                "operationId": "29a9163f38861fad93ae0510c516c5cd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Updated title"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Updated content"
+                                    },
+                                    "color": {
+                                        "type": "string",
+                                        "example": "#4CAF50"
+                                    },
+                                    "theme": {
+                                        "type": "string",
+                                        "example": "dark"
+                                    },
+                                    "is_pinned": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Note updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Note"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Note not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Delete a note",
+                "operationId": "193c1092c012659cba45810e88e7a619",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note deleted"
+                    },
+                    "404": {
+                        "description": "Note not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/notes/{id}/toggle-pin": {
+            "patch": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Toggle the pinned state of a note",
+                "operationId": "72782c7845849dc8b8cb504c3b28e1b9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pin toggled"
+                    },
+                    "404": {
+                        "description": "Note not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/user/profile": {
             "get": {
                 "tags": [
@@ -412,6 +729,49 @@
         }
     },
     "components": {
+        "schemas": {
+            "Note": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "My first note"
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "Some content here..."
+                    },
+                    "color": {
+                        "type": "string",
+                        "example": "#FFEB3B"
+                    },
+                    "theme": {
+                        "type": "string",
+                        "example": "pastel"
+                    },
+                    "is_pinned": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2025-01-15T10:30:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "example": "2025-01-15T10:30:00Z"
+                    }
+                },
+                "type": "object"
+            }
+        },
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
@@ -428,6 +788,10 @@
         {
             "name": "Authentification",
             "description": "Authentification"
+        },
+        {
+            "name": "Notes",
+            "description": "Notes"
         },
         {
             "name": "Utilisateur",
